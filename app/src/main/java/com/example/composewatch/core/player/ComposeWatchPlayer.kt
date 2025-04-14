@@ -11,7 +11,7 @@ import androidx.media3.exoplayer.ExoPlayer
 
 object ComposeWatchPlayerFactory {
 
-
+    @Synchronized
     fun createPlayer(context: Context,url:String): ExoPlayer {
         val player = ExoPlayer.Builder(context).apply {
         }.build()

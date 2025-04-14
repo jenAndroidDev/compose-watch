@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,13 +18,6 @@ import com.example.composewatch.core.player.ComposeWatchPlayerFactory
 
 @Composable
 fun FeedScreen(modifier: Modifier){
-
-
-}
-
-@Composable
-fun MediaPlayer(modifier: Modifier){
-
     val context = LocalContext.current
     var player by remember { mutableStateOf<Player?>(null) }
 
@@ -44,5 +38,15 @@ fun MediaPlayer(modifier: Modifier){
             }
         }
     }
+
+}
+
+@Composable
+fun MediaPlayer(modifier: Modifier){
+
+    var showControls by remember { mutableStateOf(true) }
+    var currentContentScaleIndex by remember { mutableIntStateOf(0) }
+
+
 
 }
