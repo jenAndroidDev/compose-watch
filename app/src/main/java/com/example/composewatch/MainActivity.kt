@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.composewatch.feature.feed.presentation.FeedScreen
 import com.example.composewatch.ui.theme.ComposeWatchTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    NotificationPermissionEffect()
+                    FeedScreen(modifier = Modifier)
                 }
             }
         }
