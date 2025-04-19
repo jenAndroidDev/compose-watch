@@ -6,9 +6,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.Player
@@ -39,6 +36,11 @@ import com.example.composewatch.core.player.utils.MediaSource
 private val url = "https://storage.googleapis.com/exoplayer-test-media-0/shortform_2.mp4"
 private val hlsUrl ="https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8"
 
+/*1.Fix the Control Ui
+* 2.Add Seek Bar
+* 3.Handle Rotation
+* 4.Add media items as youtube
+* 5.Click and Change the Media Item*/
 @OptIn(UnstableApi::class)
 @Composable
 fun FeedScreen(modifier: Modifier){
