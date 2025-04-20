@@ -13,7 +13,7 @@ import com.example.composewatch.R
 
 @OptIn(UnstableApi::class)
 @Composable
-fun NextButton(player: Player,modifier: Modifier = Modifier){
+internal fun NextButton(player: Player,modifier: Modifier = Modifier){
     val state = rememberNextButtonState(player)
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
         Icon(painter = painterResource(R.drawable.ic_skip_next),

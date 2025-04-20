@@ -15,7 +15,7 @@ import com.example.composewatch.R
 
 @OptIn(UnstableApi::class)
 @Composable
-fun PlayPauseButton(player: Player,modifier: Modifier){
+internal fun PlayPauseButton(player: Player,modifier: Modifier){
     val state = rememberPlayPauseButtonState(player)
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
       if (state.showPlay)

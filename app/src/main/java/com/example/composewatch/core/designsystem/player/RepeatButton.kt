@@ -13,7 +13,7 @@ import com.example.composewatch.R
 
 @OptIn(UnstableApi::class)
 @Composable
-fun RepeatButton(player: Player,modifier: Modifier){
+internal fun RepeatButton(player: Player,modifier: Modifier){
     val state = rememberRepeatButtonState(player)
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
         Icon(painter = painterResource(R.drawable.ic_repeat_play),
