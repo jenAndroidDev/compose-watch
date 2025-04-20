@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
 import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
 import com.example.composewatch.core.designsystem.player.CONTENT_SCALES
+import com.example.composewatch.core.designsystem.player.ComposeWatchSeekBar
 import com.example.composewatch.core.designsystem.player.ExtraControls
 import com.example.composewatch.core.designsystem.player.MinimalControls
 import com.example.composewatch.core.designsystem.player.noRippleClickable
@@ -45,7 +47,7 @@ private val hlsUrl ="https://devstreaming-cdn.apple.com/videos/streaming/example
 @Composable
 fun FeedScreen(modifier: Modifier){
     val context = LocalContext.current
-    var player by remember { mutableStateOf<Player?>(null) }
+    var player by rememberSaveable  { mutableStateOf<Player?>(null) }
 
     if (Build.VERSION.SDK_INT>23){
         LifecycleStartEffect(Unit) {
@@ -70,6 +72,7 @@ fun FeedScreen(modifier: Modifier){
             }
         }
     }
+
     player?.let { MediaPlayer(player = it, modifier = modifier.fillMaxWidth()
         .fillMaxHeight(0.3f)) }
 }
@@ -96,13 +99,14 @@ fun MediaPlayer(modifier: Modifier,
         }
         if (showControls){
             MinimalControls(player, Modifier.align(Alignment.Center))
-            ExtraControls(
-                player,
-                Modifier.fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(Color.Gray.copy(alpha = 0.4f))
-                    .navigationBarsPadding(),
-            )
+//            ExtraControls(
+//                player,
+//                Modifier.fillMaxWidth()
+//                    .align(Alignment.BottomCenter)
+//                    .background(Color.Gray.copy(alpha = 0.4f))
+//                    .navigationBarsPadding(),
+//            )
         }
+        ComposeWatchSeekBar(player = player, modifier = modifier.align(Alignment.BottomCenter))
     }
 }

@@ -28,10 +28,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeWatchTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
                     FeedScreen(modifier = Modifier)
                 }
             }

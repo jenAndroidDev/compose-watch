@@ -14,10 +14,10 @@ import com.example.composewatch.R
 
 @OptIn(UnstableApi::class)
 @Composable
-fun PreviousButton(player: Player,modifier: Modifier = Modifier){
+fun PreviousButton(player: Player,modifier: Modifier){
     val state = rememberPreviousButtonState(player)
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
-        Icon(painter = painterResource(R.drawable.ic_skip_previous),
+        Icon(painter = painterResource(R.drawable.ic_repeat_play),
             contentDescription = "Skip Previous",
             modifier = modifier)
     }

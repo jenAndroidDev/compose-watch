@@ -15,16 +15,18 @@ import com.example.composewatch.R
 
 @OptIn(UnstableApi::class)
 @Composable
-fun PlayPauseButton(player: Player,modifier: Modifier = Modifier){
+fun PlayPauseButton(player: Player,modifier: Modifier){
     val state = rememberPlayPauseButtonState(player)
-    val icon = if (state.showPlay) Icon(
-        painter = painterResource(R.drawable.ic_play),
-        contentDescription = "Play Button"
-    ) else
-        Icon(painter = painterResource(R.drawable.pause_button_svgrepo_com),
-            contentDescription = "Pause Button")
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
-        icon
+      if (state.showPlay)
+          Icon(
+          painter = painterResource(R.drawable.ic_play_circle),
+              contentDescription = ""
+        )else{
+          Icon(
+              painter = painterResource(R.drawable.ic_pause_circle),
+              contentDescription = "")
+        }
     }
 
 }
