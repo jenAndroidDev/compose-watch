@@ -5,7 +5,9 @@ import android.os.Build
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
@@ -73,14 +75,18 @@ fun FeedScreen(modifier: Modifier){
         }
     }
 
-    player?.let { MediaPlayer(player = it, modifier = modifier.fillMaxWidth()
-        .fillMaxHeight(0.3f)) }
+    player?.let {
+        MediaPlayer(player = it,
+            modifier = modifier.fillMaxWidth()
+                .fillMaxHeight(0.3f))
+    }
 }
 
 @OptIn(UnstableApi::class)
 @Composable
-fun MediaPlayer(modifier: Modifier,
-                player: Player){
+fun MediaPlayer(
+    modifier: Modifier,
+    player: Player){
 
     val showControls by remember { mutableStateOf(true) }
     val currentContentScaleIndex by remember { mutableIntStateOf(0) }
@@ -89,11 +95,16 @@ fun MediaPlayer(modifier: Modifier,
     val presentationState = rememberPresentationState(player = player)
     val scaleModifier = Modifier.resizeWithContentScale(contentScale,presentationState.videoSizeDp)
 
-    Box(modifier) {
+    Box(
+        modifier.aspectRatio(16f/9f),
+        contentAlignment = Alignment.TopCenter) {
+
         PlayerSurface(
             player = player,
             surfaceType = SURFACE_TYPE_SURFACE_VIEW,
-            modifier = scaleModifier.noRippleClickable { showControls!=showControls })
+            modifier = scaleModifier.noRippleClickable { showControls!=showControls },
+
+        )
         if (presentationState.coverSurface){
             Box(modifier = modifier.matchParentSize().background(Color.Black))
         }
@@ -107,6 +118,6 @@ fun MediaPlayer(modifier: Modifier,
 //                    .navigationBarsPadding(),
 //            )
         }
-        ComposeWatchSeekBar(player = player, modifier = modifier.align(Alignment.BottomCenter))
     }
+    ComposeWatchSeekBar(player = player, modifier = modifier)
 }
