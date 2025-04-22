@@ -25,9 +25,7 @@ fun MinimalControls(player: Player,modifier: Modifier){
 
     val modifierForIconButton = modifier.size(60.dp).background(graySemiTransparentBackground, shape = CircleShape)
 
-
-          Row(
-              modifier = modifier.fillMaxWidth(),
+    Row(modifier = modifier.fillMaxWidth(),
               verticalAlignment = Alignment.Bottom,
               horizontalArrangement = Arrangement.SpaceEvenly
           ) {
