@@ -52,6 +52,7 @@ import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
 import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
+import com.example.composewatch.core.designsystem.ComposeWatchProgressBar
 import com.example.composewatch.core.designsystem.player.CONTENT_SCALES
 import com.example.composewatch.core.designsystem.player.ComposeWatchSeekBar
 import com.example.composewatch.core.designsystem.player.MinimalControls
@@ -217,13 +218,8 @@ fun MediaPlayer(
             contentAlignment = Alignment.BottomCenter){
             ComposeWatchSeekBar(player = player)
         }
-        Button(
-            onClick = { currentContentScaleIndex = currentContentScaleIndex.inc() % CONTENT_SCALES.size },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 48.dp),
-        ) {
-            Text("ContentScale is ${CONTENT_SCALES[currentContentScaleIndex].first}")
+        AnimatedVisibility(visible = player.isPlaying) {
+            ComposeWatchProgressBar()
         }
     }
 
@@ -232,61 +228,4 @@ fun MediaPlayer(
 
 //    val context = LocalContext.current
 //    OrientationEffect(modifier = modifier, player = player, context = context)
-
 }
-
-@OptIn(UnstableApi::class)
-@Composable
-private fun OrientationEffect(
-    modifier: Modifier,
-    player: Player,
-    context: Context){
-
-    var orientation by remember { mutableIntStateOf(Configuration.ORIENTATION_PORTRAIT) }
-    val configuration = LocalConfiguration.current
-    val screenHeight by remember {   mutableStateOf( configuration.screenHeightDp.dp)}
-    val screenWidth by remember {  mutableStateOf(configuration.screenWidthDp.dp)}
-    Log.d(
-        "Resize",
-        "OrientationEffect()...$screenWidth,$screenHeight"
-    )
-    LaunchedEffect(configuration) {
-        snapshotFlow { configuration.orientation }
-            .collectLatest {
-                player.pause()
-                orientation = it
-            }
-    }
-    when (orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            Log.d(
-                "Resize",
-                "OrientationEffect() Landscape"
-            )
-            if (!player.isPlaying){
-                player.playWhenReady=true
-                player.videoSize
-            }
-            with(modifier){
-                height(screenHeight)
-                width(screenWidth)
-            }
-        }
-        Configuration.ORIENTATION_PORTRAIT->{
-            Log.d(
-                "Resize",
-                "OrientationEffect() called with Portrait"
-            )
-            with(modifier) {
-                fillMaxWidth(1f)
-                //aspectRatio(portrait_aspect_ratio)
-            }
-            if (!player.isPlaying)player.play()
-        }
-        else -> {
-        }
-    }
-}
-
-private val portrait_aspect_ratio = 9f/16f
-private val landscape_aspect_ratio= 16f/9f
