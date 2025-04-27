@@ -4,25 +4,16 @@ package com.example.composewatch.feature.feed.presentation
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
-import android.os.Looper
 import android.util.Log
-import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.TextureView
+import android.view.OrientationEventListener
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +21,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,37 +44,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.DeviceInfo
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
-import androidx.media3.common.TrackSelectionParameters
-import androidx.media3.common.Tracks
-import androidx.media3.common.VideoSize
-import androidx.media3.common.text.CueGroup
-import androidx.media3.common.util.Size
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
 import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
-import com.example.composewatch.core.designsystem.ComposeWatchProgressBar
 import com.example.composewatch.core.designsystem.player.CONTENT_SCALES
 import com.example.composewatch.core.designsystem.player.ComposeWatchSeekBar
 import com.example.composewatch.core.designsystem.player.MinimalControls
 import com.example.composewatch.core.player.ComposeWatchPlayerFactory
 import com.example.composewatch.core.player.utils.MediaSource
+import com.example.composewatch.ui.theme.PurpleGrey40
+import com.google.android.gms.location.DeviceOrientation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import java.util.logging.LogManager
 
 private val url = "https://storage.googleapis.com/exoplayer-test-media-0/shortform_2.mp4"
 private const val hlsUrl ="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
@@ -126,12 +107,30 @@ fun FeedScreen(modifier: Modifier){
             }
         }
     }
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    player?.let {
-        MediaPlayer(player = it,
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f))
+    val videoModifier = if (isLandscape) {
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    } else {
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.3f)
+            .background(Color.Gray)
+    }
+    Column(modifier = modifier
+        .fillMaxSize(),
+        verticalArrangement = Arrangement.Top) {
+        player?.let {
+            MediaPlayer(player = it,
+                modifier = videoModifier
+                    .background(color = Color.Gray)
+                    .fillMaxSize()
+            )
+        }
+
     }
 }
 
@@ -142,7 +141,7 @@ fun MediaPlayer(
     player: Player){
 
     var showControls by remember { mutableStateOf(true) }
-    val currentContentScaleIndex by remember { mutableIntStateOf(0) }
+    var currentContentScaleIndex by remember { mutableIntStateOf(0) }
     val contentScale = CONTENT_SCALES[currentContentScaleIndex].second
 
 
@@ -156,47 +155,34 @@ fun MediaPlayer(
         interactionSource.interactions.collect{interaction->
             when(interaction){
                 is PressInteraction.Press->{
-                    delay(200)
+                    delay(100)
                     showControls = false
+                    player.pause()
                 }
                 is PressInteraction.Release->{
-                    delay(200)
+                    delay(100)
                     showControls = true
+                    player.play()
                 }
             }
         }
     }
 
     Box(
-        modifier
-            .aspectRatio(16f / 9f)
+        modifier = modifier
             .clickable(
                 onClick = {},
                 interactionSource = interactionSource,
                 indication = ripple()
             ),
+        contentAlignment = Alignment.TopStart
         ) {
 
         PlayerSurface(
             player = player,
             surfaceType = SURFACE_TYPE_SURFACE_VIEW,
-            modifier = scaleModifier,
+            modifier = scaleModifier.align(Alignment.TopCenter),
             )
-//        val playerListener = object:Player.Listener{
-//            override fun onPlaybackStateChanged(playbackState: Int) {
-//                when(playbackState){
-//                    Player.STATE_READY->{
-//                        playBackStateBuffering.value = false
-//                    }
-//                    Player.STATE_BUFFERING->{
-//                       playBackStateBuffering.value=true
-//                    }
-//                    else->{}
-//                }
-//
-//            }
-//        }
-//        player.addListener(playerListener)
 
         if (presentationState.coverSurface){
             Box(modifier = modifier
@@ -227,10 +213,25 @@ fun MediaPlayer(
                 }
             }
         }
+        Box(modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.BottomCenter){
+            ComposeWatchSeekBar(player = player)
+        }
+        Button(
+            onClick = { currentContentScaleIndex = currentContentScaleIndex.inc() % CONTENT_SCALES.size },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 48.dp),
+        ) {
+            Text("ContentScale is ${CONTENT_SCALES[currentContentScaleIndex].first}")
+        }
     }
-    ComposeWatchSeekBar(player = player, modifier = modifier)
-    val context = LocalContext.current
-    OrientationEffect(modifier = scaleModifier, player = player, context = context)
+
+
+
+
+//    val context = LocalContext.current
+//    OrientationEffect(modifier = modifier, player = player, context = context)
 
 }
 
@@ -243,32 +244,49 @@ private fun OrientationEffect(
 
     var orientation by remember { mutableIntStateOf(Configuration.ORIENTATION_PORTRAIT) }
     val configuration = LocalConfiguration.current
+    val screenHeight by remember {   mutableStateOf( configuration.screenHeightDp.dp)}
+    val screenWidth by remember {  mutableStateOf(configuration.screenWidthDp.dp)}
+    Log.d(
+        "Resize",
+        "OrientationEffect()...$screenWidth,$screenHeight"
+    )
     LaunchedEffect(configuration) {
         snapshotFlow { configuration.orientation }
             .collectLatest {
                 player.pause()
-                Log.d("Orientation Effect", "OrientationEffect() called..$it")
                 orientation = it
             }
     }
     when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
+            Log.d(
+                "Resize",
+                "OrientationEffect() Landscape"
+            )
             if (!player.isPlaying){
-                Log.d(
-                    "OrientationChanging",
-                    "OrientationEffect() called with:" +
-                            " modifier..${player.isPlaying}"+"" +
-                            "$player")
-
                 player.playWhenReady=true
+                player.videoSize
             }
-            modifier.fillMaxSize()
+            with(modifier){
+                height(screenHeight)
+                width(screenWidth)
+            }
         }
         Configuration.ORIENTATION_PORTRAIT->{
-            modifier.aspectRatio(16f/9f)
+            Log.d(
+                "Resize",
+                "OrientationEffect() called with Portrait"
+            )
+            with(modifier) {
+                fillMaxWidth(1f)
+                //aspectRatio(portrait_aspect_ratio)
+            }
             if (!player.isPlaying)player.play()
         }
         else -> {
         }
     }
 }
+
+private val portrait_aspect_ratio = 9f/16f
+private val landscape_aspect_ratio= 16f/9f

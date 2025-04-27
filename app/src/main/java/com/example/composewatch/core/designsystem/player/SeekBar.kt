@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -38,14 +40,11 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComposeWatchSeekBar(player: Player,modifier: Modifier){
+fun ComposeWatchSeekBar(player: Player,modifier: Modifier = Modifier){
 
     var currentPosition by rememberSaveable  { mutableLongStateOf(player.currentPosition) }
     var bufferedPosition by rememberSaveable{ mutableLongStateOf(player.bufferedPosition) }
     var duration by rememberSaveable { mutableLongStateOf(0L) }
-
-
-    Log.d("Watch", "ComposeWatchSeekBar() called with: player = $currentPosition,$bufferedPosition,$duration, modifier = $modifier")
     LaunchedEffect(player) {
         while (true) {
             if (player.isPlaying || player.playbackState == Player.STATE_BUFFERING) {
@@ -58,8 +57,8 @@ fun ComposeWatchSeekBar(player: Player,modifier: Modifier){
 
     }
     val valueRange = (0f..duration.toFloat())
-    Box(modifier = modifier,
-        contentAlignment = Alignment.BottomCenter) {
+    Row(modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.Bottom) {
         Slider(
             value = currentPosition.toFloat(),
             onValueChange = {

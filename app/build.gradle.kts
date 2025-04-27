@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.media3.common)
 
     implementation(libs.accompanist.permissions)
+    implementation(libs.play.services.location)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
