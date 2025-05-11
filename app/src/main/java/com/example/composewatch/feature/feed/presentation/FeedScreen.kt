@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.PlayerSurface
@@ -100,6 +101,7 @@ fun FeedScreen(modifier: Modifier){
             player?.run {
                 setMediaItem(mediaSource.mediaItem)
                 prepare()
+                playWhenReady = true
             }
             onPauseOrDispose {
                 Log.d("Feed Screen", "Player Instance..$player")
@@ -131,7 +133,6 @@ fun FeedScreen(modifier: Modifier){
                     .fillMaxSize()
             )
         }
-
     }
 }
 
@@ -218,14 +219,12 @@ fun MediaPlayer(
             contentAlignment = Alignment.BottomCenter){
             ComposeWatchSeekBar(player = player)
         }
-        AnimatedVisibility(visible = player.isPlaying) {
-            ComposeWatchProgressBar()
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center){
+            AnimatedVisibility(visible = player.isLoading) {
+                ComposeWatchProgressBar()
+            }
         }
+
     }
-
-
-
-
-//    val context = LocalContext.current
-//    OrientationEffect(modifier = modifier, player = player, context = context)
 }

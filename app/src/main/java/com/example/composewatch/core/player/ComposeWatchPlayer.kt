@@ -13,15 +13,30 @@ import androidx.media3.exoplayer.LoadControl
 import androidx.media3.exoplayer.analytics.PlayerId
 import com.example.composewatch.core.player.utils.LoadControlImpl
 
+
+
 @OptIn(UnstableApi::class)
 object ComposeWatchPlayerFactory {
 
+    private const val minBufferedDuration = 2_000
+    private const val maxBufferedDuration = 3_000
+    private const val bufferForPlayBackMs = 2_000
+    private const val bufferForRebufferingMs =2_000
+
+
     private  var player: Player?=null
-    @Synchronized
+
     fun createPlayer(context: Context): Player {
         if (player==null){
-            val loadControl = LoadControlImpl().allocator
+           val loadControl =  DefaultLoadControl.Builder(
+            ).setBufferDurationsMs(
+                minBufferedDuration,
+                maxBufferedDuration,
+                bufferForPlayBackMs,
+                bufferForRebufferingMs
+            )
             player = ExoPlayer.Builder(context).apply {
+                setLoadControl(loadControl.build())
                 setPauseAtEndOfMediaItems(true)
             }.build()
         }

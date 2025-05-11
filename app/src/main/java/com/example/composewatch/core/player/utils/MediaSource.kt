@@ -1,7 +1,6 @@
 package com.example.composewatch.core.player.utils
 
 import android.content.Context
-import android.hardware.camera2.CameraExtensionSession.StillCaptureLatency
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.common.C
@@ -48,3 +47,27 @@ sealed class MediaSource{
         }
     }
 }
+
+//@OptIn(UnstableApi::class)
+//sealed class MediaItem{
+//    companion object{
+//
+//        fun fromMediaSource(url:String,
+//                            context: Context,
+//                            shouldLoadAds:Boolean){
+//
+//            when{
+//                shouldLoadAds->{
+//                    val mediaSource = MediaSourceFactory.fromUrl(url,context)
+//                    mediaSource.mediaItem.
+//                    val mediaItem = MediaItem.Builder(
+//                    )
+//                        .setUri(mediaSource.mediaItem)
+//                }
+//                else->{
+//
+//                }
+//            }
+//        }
+//    }
+//}
